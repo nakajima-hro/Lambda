@@ -1,34 +1,5 @@
 import json
 
-ev0 = {"data": "100dcc3d0d0190065f1c0100",
-       "device": "730CFA",
-       "time": "1628577957",
-       "devicetype": 0x10,
-       "devicetypeid": "60868b60113a4807ab6ba7a2",
-       }
-
-ev1 = {"data": "1101b004bc02480370030100",
-       "device": "730CFA",
-       "time": "1628577957",
-       "devicetype": 0x11,
-       "devicetypeid": "60868b60113a4807ab6ba7a2",
-       }
-
-ev2 = {"data": "12012e0e0100000000000000",
-       "device": "730CFA",
-       "time": "1628577957",
-       "devicetype": 0x12,
-       "devicetypeid": "60868b60113a4807ab6ba7a2",
-       }
-
-ev3 = {"data": "000f9e0165f2020000000000 ",
-       "device": "730CFA",
-       "time": "1628577957",
-       "devicetype": 0x00,
-       "devicetypeid": "60868b60113a4807ab6ba7a2",
-       }
-
-
 # DeviceType
 DEVICE_TYPE_SENSOR = 0x00
 DEVICE_TYPE_MOTION = 0x02
@@ -111,7 +82,6 @@ def sensor_handler(data):
         motion = motion | 0x7f
     else:
         motion = 0
-    n = n + 2
 
     return {
         'flags': flags,
@@ -266,9 +236,6 @@ def lambda_handler(event, context):
     if event["devicetype"] == DEVICE_TYPE_SENSOR:
         output = sensor_handler(event["data"])
 
-    # elif event["devicetype"] == 0x01:
-    #     output = weight_handler(event["data"])
-
     elif event["devicetype"] == DEVICE_TYPE_MOTION:
         output = motion_handler(event["data"])
 
@@ -282,9 +249,9 @@ def lambda_handler(event, context):
         output = health_thermometer_handler(event["data"])
 
     else:
-        output = ""
+        output = {}
 
-    print(json.dumps(output))
+    # print(json.dumps(output))
 
     output.update(event)
 
@@ -294,6 +261,3 @@ def lambda_handler(event, context):
         'body': json.dumps(output)
     }
 
-
-# Press the green button in the gutter to run the script.
-print(lambda_handler(ev3, ""))
